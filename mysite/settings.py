@@ -25,13 +25,14 @@ SECRET_KEY = "django-insecure-c4896ozwh(zn#nccc^6lc5$ends__8y2zm+4u53d4cwh)5_=n_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    "channels",
+    # "channels",
+    "daphne",
     
     "chat",
     
@@ -42,6 +43,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+
+ASGI_APPLICATION = "mysite.asgi.application"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -73,7 +76,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "mysite.wsgi.application"
 
-ASGI_APPLICATION = 'mysite.asgi.application'
+
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
