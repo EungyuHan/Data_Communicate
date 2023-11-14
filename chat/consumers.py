@@ -4,6 +4,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.username = self.scope['url_route']['kwargs']['username']  # 닉네임을 URL에서 추출합니다.
         self.room_group_name = 'chat_%s' % self.room_name
 
         # Join room group
@@ -31,15 +32,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'message': message
+                'message': message,
+                'username': self.username,  # 닉네임도 같이 보냅니다.
             }
         )
 
     # Receive message from room group
     async def chat_message(self, event):
         message = event['message']
+        username = event['username']  # 닉네임을 받아옵니다.
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
-            'message': message
+            'message': message,
+            'username': username,  # 닉네임도 같이 보냅니다.
         }))

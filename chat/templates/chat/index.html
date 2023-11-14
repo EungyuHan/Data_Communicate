@@ -1,4 +1,3 @@
-<!-- chat/templates/chat/index.html -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,12 +5,20 @@
     <title>Chat Rooms</title>
 </head>
 <body>
+    What's your nickname?<br>
+    <input id="nickname-input" type="text" size="100"><br>
     What chat room would you like to enter?<br>
     <input id="room-name-input" type="text" size="100"><br>
     <input id="room-name-submit" type="button" value="Enter">
 
     <script>
-        document.querySelector('#room-name-input').focus();
+        document.querySelector('#nickname-input').focus();
+        document.querySelector('#nickname-input').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // enter, return
+                document.querySelector('#room-name-input').focus(); // focus to the room input on pressing enter
+            }
+        };
+
         document.querySelector('#room-name-input').onkeyup = function(e) {
             if (e.keyCode === 13) {  // enter, return
                 document.querySelector('#room-name-submit').click();
@@ -20,7 +27,8 @@
 
         document.querySelector('#room-name-submit').onclick = function(e) {
             var roomName = document.querySelector('#room-name-input').value;
-            window.location.pathname = '/chat/' + roomName + '/';
+            var nickname = document.querySelector('#nickname-input').value;
+            window.location.pathname = '/chat/' + roomName + '/' + nickname + '/'; // pass the nickname to the server
         };
     </script>
 </body>
