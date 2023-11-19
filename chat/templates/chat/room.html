@@ -12,6 +12,11 @@
     {{ room_name|json_script:"room-name" }}
     {{ username|json_script:"username" }}
     <script>
+        function scrollToBottom() {
+            var textarea = document.getElementById('chat-log');
+            textarea.scrollTop = textarea.scrollHeight;
+        }
+
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
         const username = JSON.parse(document.getElementById('username').textContent);
 
@@ -29,6 +34,7 @@
             const data = JSON.parse(e.data);
             const message = data.username + ': ' + data.message;
             document.querySelector('#chat-log').value += (message + '\n');
+            scrollToBottom();
         };
 
         chatSocket.onclose = function(e) {
