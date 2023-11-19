@@ -1,37 +1,31 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm
 from .models import User
 from .forms import UserForm
 
-def signup_view(request):
+def user_view(request):
     if request.method == "POST":
-        form = UserForm(request.POST)
-        if form.is_valid():
-            if User.objects.filter(id=form.cleaned_data['id']).exists():
-                return render(request, 'signup.html', {'error': 'ID already exists'})
-            if User.objects.filter(nickname=form.cleaned_data['nickname']).exists():
-                return render(request, 'signup.html', {'error': 'Nickname already exists'})
-            
-            user = User.objects.create_user(
-                id=form.cleaned_data['id'],
-                password=form.cleaned_data['password'],
-                nickname=form.cleaned_data['nickname'],
-            )
-            return redirect('login')
+        if 'signup' in request.POST:
+            signup_form = UserForm(request.POST)
+            if signup_form.is_valid():
+                user = User.objects.create_user(
+                    id=signup_form.cleaned_data['id'],
+                    password=signup_form.cleaned_data['password'],
+                    nickname=signup_form.cleaned_data['nickname'],
+                )
+                login(request, user)
+                return redirect('/')
+        elif 'login' in request.POST:
+            login_form = AuthenticationForm(request, data=request.POST)
+            if login_form.is_valid():
+                login(request, login_form.get_user())
+                return redirect('/')
+        elif 'logout' in request.POST:
+            logout(request)
+            return redirect('/')
     else:
-        form = UserForm()
-    return render(request, 'user/signup.html', {'form': form})
+        signup_form = UserForm()
+        login_form = AuthenticationForm()
 
-def login_view(request):
-    if request.method == "POST":
-        id = request.POST['id']
-        password = request.POST['password']
-        user = authenticate(request, username=id, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('/chat')  # Redirect to a success page
-        else:
-            return render(request, 'login.html', {'error': 'Invalid login'})
-    return render(request, 'user/login.html')
-
-# 로그아웃 view 작성
+    return render(request, 'user/user.html', {'signup_form': signup_form, 'login_form': login_form})

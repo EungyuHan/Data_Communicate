@@ -1,0 +1,26 @@
+<!-- user.html -->
+{% if request.user.is_authenticated %}
+<h2>Welcome, {{ request.user.nickname }}!</h2>
+{% endif %}
+
+<h2>Signup</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ signup_form.as_p }}
+  <button type="submit" name="signup">Signup</button>
+</form>
+
+<h2>Login</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ login_form.as_p }}
+  <button type="submit" name="login">Login</button>
+</form>
+
+{% if request.user.is_authenticated %}
+<h2>Logout</h2>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" name="logout">Logout</button>
+</form>
+{% endif %}

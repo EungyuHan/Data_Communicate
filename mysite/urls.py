@@ -5,5 +5,6 @@ from django.contrib import admin
 urlpatterns = [
     path('chat/', include('chat.urls')),
     path('user/', include('user.urls')),
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
+    path('', include('temp.urls')),
 ]
