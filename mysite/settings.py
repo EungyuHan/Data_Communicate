@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "daphne",
     
     "chat",
+    "user",
     
     "django.contrib.admin",
     "django.contrib.auth",
@@ -138,3 +139,5 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+AUTH_USER_MODEL = 'user.User'
