@@ -29,6 +29,7 @@
             padding: 10px;
             overflow-y: auto;
             border-radius: 20px;
+            resize: none; /* textarea의 크기 조절 불가능 */
         }
 
         #chat-input-container {
@@ -59,7 +60,7 @@
 </head>
 <body>
     <div id="chat-header">캐치마인드</div>
-    <div id="chat-log"></div>
+    <textarea id="chat-log" readonly></textarea>
     <div id="chat-input-container">
         <input id="chat-message-input" type="text", placeholder="단어를 입력해주세요.">
         <input id="chat-message-submit" type="button" value="입력">
