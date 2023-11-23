@@ -4,11 +4,66 @@
 <head>
     <meta charset="utf-8"/>
     <title>Chat Room</title>
+    <style>
+        body {
+            background-color: #87CEEB; /* 연한 하늘색 배경 색상 */
+            font-family: Arial, sans-serif;
+            margin-left: 20%; /* body의 기본 margin 제거 */
+            margin-right: 20%;
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* 뷰포트 높이 100% */
+        }
+
+        #chat-header {
+            text-align: center;
+            font-size: 75px;
+            margin-bottom: 10px;
+            color: #000; /* 진한 초록색 텍스트 색상 */
+        }
+
+        #chat-log {
+            flex: 1;
+            background-color: #ADD8E6; /* 연한 노란색 배경 색상 */
+            color: #000; /* 텍스트 색상 */
+            padding: 10px;
+            overflow-y: auto;
+            border-radius: 20px;
+        }
+
+        #chat-input-container {
+            display: flex;
+            margin-top: 10px; /* 적절한 간격을 주기 위해 마진 추가 */
+        }
+
+        #chat-message-input {
+            width: 80%;
+            padding: 5px;
+            border: 1px solid #008000; /* 진한 초록색 테두리 */
+            background-color: #FFFFE0; /* 연한 노란색 배경 색상 */
+            color: #000; /* 텍스트 색상 */
+            border-radius: 5px;
+        }
+
+        #chat-message-submit {
+            width: 18%;
+            padding: 5px;
+            margin-left: auto;
+            background-color: #008000; /* 진한 초록색 배경 색상 */
+            color: #FFF; /* 텍스트 색상 */
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <textarea id="chat-log" cols="100" rows="20"></textarea><br>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
+    <div id="chat-header">캐치마인드</div>
+    <div id="chat-log"></div>
+    <div id="chat-input-container">
+        <input id="chat-message-input" type="text", placeholder="단어를 입력해주세요.">
+        <input id="chat-message-submit" type="button" value="입력">
+    </div>
     {{ room_name|json_script:"room-name" }}
     {{ nickname|json_script:"nickname" }}
     <script>
