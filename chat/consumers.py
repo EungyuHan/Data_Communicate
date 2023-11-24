@@ -58,14 +58,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
         global start_word
         
         message = event['message']
+        nickname = event['nickname']
         
         # print(start_word[len(start_word)-1])
-        print(message)
+        # print(message)
         
         if message != '':
             await self.send(text_data=json.dumps({
                 'message': message,
-                'nickname' : self.nickname,
+                'nickname' : nickname,
             }))
         if message[0] == start_word[len(start_word)-1]:
             start_word = message
