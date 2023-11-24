@@ -68,16 +68,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'message': message,
                 'nickname' : nickname,
             }))
-        if message[0] == start_word[len(start_word)-1]:
-            try:
-                start_word = message
-                await self.send(text_data=json.dumps({
-                    'message': '일치합니다--------------',
-                }))
-            except:
-                print('error' + '-'+ message + '-' + start_word)
-                await self.channel_layer.group_add(
-                    self.room_group_name,
-                    self.channel_name
-                )
-                await self.accept()
+            
+        try:
+            if message[0] == start_word[len(start_word)-1]:
+                    start_word = message
+                    await self.send(text_data=json.dumps({
+                        'message': '일치합니다--------------',
+                    }))
+        except:
+            print('error' + '-'+ message + '-' + start_word)
+            await self.channel_layer.group_add(
+                self.room_group_name,
+                self.channel_name
+            )
+            await self.accept()
