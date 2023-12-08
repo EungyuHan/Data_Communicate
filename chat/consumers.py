@@ -92,20 +92,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
         message = event['message']
         nickname = event['nickname']
         
-        # print(user_scores[self.room_group_name])
-
-        await self.send(text_data=json.dumps({
-            'message': message,
-            'nickname' : nickname,
-        }))
-
+        if(message == ''):
+            return
+        
         if (message[0] == start_word[len(start_word)-1]) and (message in word_set):
             start_word = message
 
             for user_score in user_scores[self.room_group_name]:
                 if user_score['nickname'] == nickname:
                     user_score['score'] += 1
-
+            print(user_scores[self.room_group_name])
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {
@@ -114,5 +110,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 }
             )
             await self.send(text_data=json.dumps({
-                'message': "정답입니다!",
+                'nickname' : nickname,
+                'message': message,
+            }))
+            await self.send(text_data=json.dumps({
+                'message': '정답입니다!',
+            }))
+        else:
+            await self.send(text_data=json.dumps({
+                'nickname' : nickname,
+                'message': message,
             }))

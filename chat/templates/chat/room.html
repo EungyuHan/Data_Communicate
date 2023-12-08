@@ -115,10 +115,38 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
+
+            console.log(data.type)
     
-            if (data.type === 'user_list' || data.type === 'score_update') {
-                updateUsers(data.users);
+            if (data.type === 'score_update') {
+                console.log('score update');
+                for (var i = 0; i < data.user_scores.length; i++) {
+                    var user_score = data.user_scores[i];
+                    var user = users.find(user => user.name === user_score.nickname);
+                    if (user) {  // 해당 닉네임의 사용자가 존재하면
+                        user.score = user_score.score;  // 점수 업데이트
+
+                        var leftUsersDiv = document.getElementById("left-users");
+                        var rightUsersDiv = document.getElementById("right-users");
+                        leftUsersDiv.innerHTML = '';
+                        rightUsersDiv.innerHTML = '';
+        
+                        for (var j = 0; j < users.length; j++) {
+                            var userDiv = document.createElement("div");
+                            userDiv.className = "user";
+                            userDiv.innerHTML = "<h2>" + users[j].name + "</h2>" + "<p>점수: " + users[j].score + "</p>";
+                            if (j < 3) {
+                                leftUsersDiv.appendChild(userDiv);
+                            } else {
+                                rightUsersDiv.appendChild(userDiv);
+                            }
+                        }
+                    } else {
+                        console.log('Undefined user: ' + user_score.nickname);
+                    }
+                }
             }
+            console.log(users);
     
             if (data.message) {
                 if (data.nickname !== undefined) {
