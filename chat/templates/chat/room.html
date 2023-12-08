@@ -10,8 +10,8 @@
             font-family: Arial, sans-serif;
             margin-left: 20%; /* body의 기본 margin 제거 */
             margin-right: 20%;
-            display: flex;
-            flex-direction: column;
+            display: flex; /* 수정된 부분 */
+            flex-direction: row; /* 수정된 부분 */
             height: 100vh; /* 뷰포트 높이 100% */
         }
 
@@ -29,7 +29,6 @@
             padding: 10px;
             overflow-y: auto;
             border-radius: 20px;
-            resize: none; /* textarea의 크기 조절 불가능 */
         }
 
         #chat-input-container {
@@ -56,18 +55,48 @@
             cursor: pointer;
             border-radius: 5px;
         }
+
+        .users { display: flex; flex-direction: column; justify-content: space-between; width: 20%; height: 100%; }
+        .user { border: 1px solid black; margin: 5px; padding: 5px; }
+        .chat { display: flex; flex-direction: column; justify-content: space-between; width: 60%; height: 100%; }
     </style>
 </head>
 <body>
-    <div id="chat-header">캐치마인드</div>
-    <textarea id="chat-log" readonly></textarea>
-    <div id="chat-input-container">
-        <input id="chat-message-input" type="text", placeholder="단어를 입력해주세요.">
-        <input id="chat-message-submit" type="button" value="입력">
+    <div class="users" id="left-users"></div>
+    <div class="chat">
+        <div id="chat-header">캐치마인드</div>
+        <textarea id="chat-log" readonly></textarea>
+        <div id="chat-input-container">
+            <input id="chat-message-input" type="text", placeholder="단어를 입력해주세요.">
+            <input id="chat-message-submit" type="button" value="입력">
+        </div>
     </div>
+    <div class="users" id="right-users"></div>
     {{ room_name|json_script:"room-name" }}
     {{ nickname|json_script:"nickname" }}
     <script>
+
+        // 사용자 정보
+        var users = [
+            { name: "nickname1", score: 0 },
+            { name: "nickname2", score: 0 },
+            { name: "nickname3", score: 0 },
+        ];
+
+        var leftUsersDiv = document.getElementById("left-users");
+        var rightUsersDiv = document.getElementById("right-users");
+
+        for (var i = 0; i < users.length; i++) {
+            var userDiv = document.createElement("div");
+            userDiv.className = "user";
+            userDiv.innerHTML = "<h2>" + users[i].name + "</h2>" + "<p>점수: " + users[i].score + "</p>";
+            if (i < 3) {
+                leftUsersDiv.appendChild(userDiv);
+            } else {
+                rightUsersDiv.appendChild(userDiv);
+            }
+        }
+
         function scrollToBottom() {
             var textarea = document.getElementById('chat-log');
             textarea.scrollTop = textarea.scrollHeight;
@@ -86,19 +115,19 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            // nickname이 없으면 message만 출력
-            if (data.nickname === undefined) {
-                document.querySelector('#chat-log').value += (data.message + '\n');
-                scrollToBottom();
-                return;
+    
+            if (data.type === 'user_list' || data.type === 'score_update') {
+                updateUsers(data.users);
             }
-            else{
-                // nickname이 있으면 nickname과 message 출력
-                document.querySelector('#chat-log').value += (data.nickname + ': ' + data.message + '\n');
+    
+            if (data.message) {
+                if (data.nickname !== undefined) {
+                    document.querySelector('#chat-log').value += (data.nickname + ': ' + data.message + '\n');
+                } else {
+                    document.querySelector('#chat-log').value += (data.message + '\n');
+                }
                 scrollToBottom();
-                return;
             }
-
         };
 
         chatSocket.onclose = function(e) {
